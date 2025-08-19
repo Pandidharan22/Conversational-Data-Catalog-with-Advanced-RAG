@@ -5,9 +5,13 @@
 import os
 from huggingface_hub import InferenceClient
 
-def get_hf_token(token_file="token"):
-    with open(token_file, "r", encoding="utf-8") as f:
-        return f.read().strip()
+
+def get_hf_token():
+    # Prefer environment variable for cloud deployment
+    token = os.environ.get("HF_TOKEN")
+    if not token:
+        raise RuntimeError("Hugging Face token not found in environment variable 'HF_TOKEN'. Please set it in your deployment secrets or environment.")
+    return token
 
 def answer_question_with_context(question, context, model_name="meta-llama/Meta-Llama-3-8B-Instruct"):
     """
