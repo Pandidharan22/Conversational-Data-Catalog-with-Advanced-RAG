@@ -1,0 +1,8 @@
+streamlit
+pandas
+langchain
+chromadb
+transformers
+sentence-transformers
+llama-cpp-python
+faiss-cpu
