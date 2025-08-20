@@ -62,3 +62,6 @@ Pipfile.lock
 
 # Ignore Hugging Face token file
 token
+
+# Ignore environment variable files
+.env
