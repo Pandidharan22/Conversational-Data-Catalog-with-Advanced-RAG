@@ -1,5 +1,6 @@
 
-import streamlit as st
+
+import gradio as gr
 import pandas as pd
 import tempfile
 import os
@@ -7,51 +8,43 @@ from rag_pipeline import build_faiss_index, search_metadata
 from metadata_indexer import extract_metadata
 from llm_answer import answer_question_with_context
 
-st.set_page_config(page_title="Conversational Data Catalog with RAG", layout="wide")
-st.title("Conversational Data Catalog with Advanced RAG")
+metadata_chunks = []
+faiss_built = False
 
-# Session state for metadata and FAISS index
-if 'metadata_chunks' not in st.session_state:
-    st.session_state['metadata_chunks'] = []
-if 'faiss_built' not in st.session_state:
-    st.session_state['faiss_built'] = False
-
-st.sidebar.header("Upload Datasets")
-uploaded_files = st.sidebar.file_uploader(
-    "Upload one or more CSV files", type=["csv"], accept_multiple_files=True
-)
-
-if uploaded_files:
-    st.session_state['metadata_chunks'] = []
-    for uploaded_file in uploaded_files:
-        # Save to a temp file
+def upload_files(files):
+    global metadata_chunks, faiss_built
+    metadata_chunks = []
+    for uploaded_file in files:
         with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp:
-            tmp.write(uploaded_file.read())
+            tmp.write(uploaded_file)
             tmp_path = tmp.name
-        # Extract metadata
         meta = extract_metadata(tmp_path)
-        st.session_state['metadata_chunks'].append(meta)
+        metadata_chunks.append(meta)
         os.unlink(tmp_path)
-    # Build FAISS index for uploaded files
-    build_faiss_index(st.session_state['metadata_chunks'])
-    st.session_state['faiss_built'] = True
-    st.success(f"Indexed {len(uploaded_files)} dataset(s)!")
+    build_faiss_index(metadata_chunks)
+    faiss_built = True
+    return f"Indexed {len(files)} dataset(s)!"
 
-st.header("Ask Questions about Your Data Catalog")
-user_query = st.text_input("Enter your question:")
-
-
-if user_query and st.session_state.get('faiss_built', False):
+def answer_question(user_query):
+    if not faiss_built or not metadata_chunks:
+        return "Please upload and index datasets first."
     results = search_metadata(user_query)
-    st.subheader("Relevant Metadata Chunks:")
-    for i, chunk in enumerate(results, 1):
-        st.markdown(f"**Result {i}:**\n```{chunk}```")
-    # Concatenate all retrieved metadata for LLM context
     context = "\n".join(results)
-    with st.spinner("Generating answer with LLM..."):
-        answer = answer_question_with_context(user_query, context)
-    st.subheader("LLM Answer:")
-    st.markdown(f"> {answer}")
+    answer = answer_question_with_context(user_query, context)
+    return answer
 
-st.markdown("---")
-st.markdown("Built with open-source RAG, FAISS, and Streamlit.")
+with gr.Blocks() as demo:
+    gr.Markdown("# Conversational Data Catalog with Advanced RAG (Gradio)")
+    file_upload = gr.File(label="Upload CSV files", file_count="multiple", type="binary")
+    upload_btn = gr.Button("Index Datasets")
+    upload_output = gr.Textbox(label="Indexing Status")
+    user_query = gr.Textbox(label="Ask a question about your data catalog")
+    answer_output = gr.Textbox(label="LLM Answer")
+
+    upload_btn.click(upload_files, inputs=[file_upload], outputs=[upload_output])
+    user_query.submit(answer_question, inputs=[user_query], outputs=[answer_output])
+
+    gr.Markdown("---\nBuilt with open-source RAG, FAISS, and Gradio.")
+
+if __name__ == "__main__":
+    demo.launch()

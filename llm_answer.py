@@ -1,8 +1,6 @@
-
-
-
-
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from huggingface_hub import InferenceClient
 
 
@@ -25,7 +23,8 @@ def answer_question_with_context(question, context, model_name="meta-llama/Meta-
     )
     system_prompt = (
         "You are a helpful assistant for a data catalog. "
-        "Given the following metadata about datasets, answer the user's question in detail. "
+        "Given the following metadata about datasets, answer the user's question. "
+        "Answer in detail if and only if asked to; Else answer in brief."
         "If the question asks for a statistical summary, explain each metric (mean, std, min, max, nulls, etc.) in simple terms. "
         "If the answer is not present, say so honestly."
     )
