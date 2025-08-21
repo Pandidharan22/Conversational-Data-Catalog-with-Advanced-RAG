@@ -1,4 +1,4 @@
-Dataset: tmpnwy5pdtq.csv
+Dataset: tmpz7sute_2.csv
 Number of rows: 891
 Number of columns: 12
 Columns:
@@ -14,4 +14,10 @@ Columns:
   - Fare: type=float64, nulls=0, mean=32.20, std=49.69, min=0.0, max=512.3292
   - Cabin: type=object, nulls=687
   - Embarked: type=object, nulls=2
+----------------------------------------
+Dataset: tmpmf38x2ut.csv
+Number of rows: 2240
+Number of columns: 1
+Columns:
+  - ID	Year_Birth	Education	Marital_Status	Income	Kidhome	Teenhome	Dt_Customer	Recency	MntWines	MntFruits	MntMeatProducts	MntFishProducts	MntSweetProducts	MntGoldProds	NumDealsPurchases	NumWebPurchases	NumCatalogPurchases	NumStorePurchases	NumWebVisitsMonth	AcceptedCmp3	AcceptedCmp4	AcceptedCmp5	AcceptedCmp1	AcceptedCmp2	Complain	Z_CostContact	Z_Revenue	Response: type=object, nulls=0
 ----------------------------------------
