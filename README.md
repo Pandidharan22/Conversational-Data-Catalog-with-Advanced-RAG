@@ -1,3 +1,35 @@
+## Architecture
+
+The project follows a modular architecture for maintainability and extensibility:
+
+- **Frontend/UI:** Gradio provides a web-based interface for file upload and conversational chat.
+- **Metadata Extraction:** Each uploaded CSV is processed to extract schema and sample data using `metadata_indexer.py`.
+- **Vector Store (RAG):** Extracted metadata is embedded and indexed using FAISS for efficient similarity search (`rag_pipeline.py`).
+- **LLM Integration:** User questions are answered by retrieving relevant metadata chunks and passing them, along with the question, to an open-source LLM via Hugging Face Inference API (`llm_answer.py`).
+- **Secrets Management:** Sensitive tokens are loaded from a `.env` file (local) or Hugging Face Space secrets (cloud).
+
+## Tech Stack & Tools
+
+- **Python 3.10+** — Core programming language
+- **Gradio** — UI framework for building conversational web apps
+- **FAISS** — Vector similarity search for RAG
+- **Hugging Face Transformers** — LLM inference and embeddings
+- **sentence-transformers** — For generating embeddings
+- **pandas** — Data manipulation and CSV parsing
+- **python-dotenv** — Local secret management
+- **Hugging Face Spaces** — Cloud deployment
+- **GitHub Copilot** — Used for code suggestions and productivity
+
+## Workflow
+
+1. **User uploads CSV files** via the Gradio interface.
+2. **App extracts metadata** (columns, types, samples) from each file.
+3. **Metadata is embedded** and indexed in FAISS for fast retrieval.
+4. **User asks a question** in the chat interface.
+5. **Relevant metadata is retrieved** from FAISS based on the question.
+6. **LLM receives the question and context** and generates a natural language answer.
+7. **Conversation history** is displayed, allowing follow-up questions.
+
 # Conversational Data Catalog with Advanced RAG
 
 ## Overview
@@ -58,10 +90,6 @@ This project is a conversational chatbot app that allows you to upload CSV datas
 - `requirements.txt` — Python dependencies
 - `data/` — Example datasets
 - `.env` — Local secrets (not tracked by git)
-
-## Credits
-
-- I used GitHub Copilot to assist with Gradio integration and best practices.
 
 ## License
 
