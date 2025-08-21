@@ -4,6 +4,8 @@
 
 This project is a conversational chatbot app that allows you to upload CSV datasets, automatically indexes them, and answers your questions using Retrieval-Augmented Generation (RAG) and open-source LLMs. The app is built with Gradio for the UI and is designed for both local and cloud (Hugging Face Spaces) deployment.
 
+**Try the app live:** [Conversational Data Catalogue on Hugging Face Spaces](https://huggingface.co/spaces/Pandidharan22/Conversational_Data_Catalogue)
+
 ## Features
 
 - **Automatic Dataset Indexing:** Upload CSV files and they are instantly indexed for search.
